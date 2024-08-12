@@ -42,7 +42,12 @@ interface Props {
     loadingSpinner?: JSX.Element;
 }
 
-export const FileAttachment: FunctionComponent<Props> = (props: Props) => {
+export const FileAttachment: FunctionComponent<Props> = ({
+    onSelectFile,
+    attachmentFileTypes = FileTypes.map((value) => value as FileType),
+    isUploading,
+    loadingSpinner,
+}: Props) => {
     const [popupOpen, setPopupOpen] = useState<boolean>(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -56,14 +61,14 @@ export const FileAttachment: FunctionComponent<Props> = (props: Props) => {
 
     const handleSelectFile = (file: Message) => {
         handleCloseAttachment();
-        props.onSelectFile(file);
+        onSelectFile(file);
     };
 
     const classNamesPopup = `${style.popup} ${popupOpen ? style.open : ""}`;
 
-    if (!props.attachmentFileTypes) return null;
+    if (!attachmentFileTypes) return null;
 
-    const fileButtons = props.attachmentFileTypes.map((type) => {
+    const fileButtons = attachmentFileTypes.map((type) => {
         return (
             <FileButton
                 fileType={type}
@@ -90,10 +95,10 @@ export const FileAttachment: FunctionComponent<Props> = (props: Props) => {
                 </div>
                 <div
                     className={`${style.uploadingOverlay} ${
-                        props.isUploading ? style.open : ""
+                        isUploading ? style.open : ""
                     }`}
                 >
-                    {props.loadingSpinner}
+                    {loadingSpinner}
                     <IoCloudUpload size={20} className={style.icon} />
                 </div>
             </div>
@@ -105,8 +110,4 @@ export const FileAttachment: FunctionComponent<Props> = (props: Props) => {
             )}
         </div>
     );
-};
-
-FileAttachment.defaultProps = {
-    attachmentFileTypes: FileTypes.map((value) => value as FileType),
 };

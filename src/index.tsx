@@ -24,33 +24,39 @@ interface Props {
     isUploading?: boolean;
 }
 
-export const Chat: React.FunctionComponent<Props> = (props: Props) => {
+export const Chat: React.FunctionComponent<Props> = ({
+    messages,
+    userId,
+    onSend,
+    loadingSpinner = <LoadingIndicator />, // Default value provided here
+    buttons,
+    customFactories,
+    disableAttachments,
+    attachmentFileTypes,
+    isUploading,
+}: Props) => {
     const { dropzoneContainerProps, feedbackContainer } = useDropzone();
 
     return (
         <div className={style.main} {...dropzoneContainerProps}>
             <div className={style.container}>
                 <MessageContainer
-                    userId={props.userId}
-                    messages={props.messages}
-                    factoryOverride={props.customFactories}
-                    loadingSpinner={props.loadingSpinner}
+                    userId={userId}
+                    messages={messages}
+                    factoryOverride={customFactories}
+                    loadingSpinner={loadingSpinner}
                 />
                 <SendMessage
-                    onSend={props.onSend}
-                    loadingSpinner={props.loadingSpinner}
-                    buttons={props.buttons}
-                    customFactories={props.customFactories}
-                    disableAttachments={props.disableAttachments}
-                    attachmentFileTypes={props.attachmentFileTypes}
-                    isUploading={props.isUploading}
+                    onSend={onSend}
+                    loadingSpinner={loadingSpinner}
+                    buttons={buttons}
+                    customFactories={customFactories}
+                    disableAttachments={disableAttachments}
+                    attachmentFileTypes={attachmentFileTypes}
+                    isUploading={isUploading}
                 />
             </div>
             {feedbackContainer}
         </div>
     );
-};
-
-Chat.defaultProps = {
-    loadingSpinner: <LoadingIndicator />,
 };

@@ -9,19 +9,23 @@ interface Props {
     sendButton?: JSX.Element;
 }
 
-export const Input: FunctionComponent<Props> = (props: Props) => {
+export const Input: FunctionComponent<Props> = ({
+    onSend,
+    allowEmptyMessages = true,
+    sendButton = <SendButtonRenderer />,
+}: Props) => {
     const inputField = createRef<HTMLTextAreaElement>();
 
     const handleSend = () => {
         if (inputField.current === null) return;
         if (
-            !props.allowEmptyMessages &&
+            !allowEmptyMessages &&
             inputField.current.value.trim().length <= 0
         )
             return;
-        if (!props.onSend) return;
+        if (!onSend) return;
 
-        props.onSend({
+        onSend({
             text: inputField.current.value,
             createdAt: new Date(Date.now()),
             type: "text",
@@ -40,11 +44,7 @@ export const Input: FunctionComponent<Props> = (props: Props) => {
     return (
         <div className={style.input}>
             <textarea ref={inputField} onKeyPress={handleInputKey} />
-            <div onClick={handleSend}>{props.sendButton}</div>
+            <div onClick={handleSend}>{sendButton}</div>
         </div>
     );
-};
-
-Input.defaultProps = {
-    sendButton: <SendButtonRenderer />,
 };

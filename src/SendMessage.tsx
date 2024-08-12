@@ -21,15 +21,24 @@ export interface SendMessageButtons {
     send: JSX.Element;
 }
 
-export const SendMessage: FunctionComponent<Props> = (props: Props) => {
+export const SendMessage: FunctionComponent<Props> = ({
+    onSend,
+    loadingSpinner,
+    buttons,
+    customFactories,
+    disableAttachments = false,
+    attachmentFileTypes,
+    isUploading,
+    dropAttachment,
+}: Props) => {
     const [attachmentMessage, setAttachmentMessage] = useState<Message | null>(
         null
     );
 
     useEffect(() => {
-        if (!props.dropAttachment) return;
-        setAttachmentMessage(props.dropAttachment);
-    }, [props.dropAttachment]);
+        if (!dropAttachment) return;
+        setAttachmentMessage(dropAttachment);
+    }, [dropAttachment]);
 
     const onFileChanged = (file: Message) => {
         setAttachmentMessage(file);
@@ -41,28 +50,24 @@ export const SendMessage: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <div className={style.message_container}>
-            <Input onSend={props.onSend} sendButton={props.buttons?.send} />
-            {!props.disableAttachments && (
+            <Input onSend={onSend} sendButton={buttons?.send} />
+            {!disableAttachments && (
                 <FileAttachment
                     onSelectFile={onFileChanged}
-                    attachmentFileTypes={props.attachmentFileTypes}
-                    loadingSpinner={props.loadingSpinner}
-                    isUploading={props.isUploading}
+                    attachmentFileTypes={attachmentFileTypes}
+                    loadingSpinner={loadingSpinner}
+                    isUploading={isUploading}
                 />
             )}
             {attachmentMessage && (
                 <AttachmentPreview
                     attachment={attachmentMessage}
                     onCancel={onAttachmentPreviewClose}
-                    onSend={props.onSend}
-                    loadingSpinner={props.loadingSpinner}
-                    customFactories={props.customFactories}
+                    onSend={onSend}
+                    loadingSpinner={loadingSpinner}
+                    customFactories={customFactories}
                 />
             )}
         </div>
     );
-};
-
-SendMessage.defaultProps = {
-    disableAttachments: false,
 };
